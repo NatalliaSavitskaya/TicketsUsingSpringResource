@@ -15,19 +15,22 @@ public class Main {
         UserService userService = context.getBean(UserService.class);
         TicketService ticketService = context.getBean(TicketService.class);
 
-        // Example saving User and Ticket to database
-        User user = new User(1, "New User", LocalDateTime.now(), "PENDING");
-        userService.saveUser(user);
-        System.out.println("User saved successfully: " + user);
-        Ticket ticket = new Ticket(1, 1, LocalDateTime.now(), "DAY");
-        ticketService.saveTicket(ticket);
-        System.out.println("Ticket saved successfully: " + ticket);
+        try {
+            // Example saving User and Ticket to database
+            User user = new User(1, "New User", LocalDateTime.now(), "PENDING");
+            userService.saveUser(user);
+            System.out.println("User saved successfully: " + user);
+            Ticket ticket = new Ticket(1, 1, LocalDateTime.now(), "DAY");
+            ticketService.saveTicket(ticket);
+            System.out.println("Ticket saved successfully: " + ticket);
 
-        // Example updating status of User and creating his/her Ticket
-        userService.saveUser(new User(2, "Second User", LocalDateTime.now(), "PENDING"));
-        userService.updateUserStatusAndCreateTicket(2, "ACTIVATED", "DAY");
-        System.out.println("User status updated to ACTIVATED and ticket created successfully.");
-
+            // Example updating status of User and creating his/her Ticket
+            userService.saveUser(new User(2, "Second User", LocalDateTime.now(), "PENDING"));
+            userService.updateUserStatusAndCreateTicket(2, "ACTIVATED", "DAY");
+            System.out.println("User status updated to ACTIVATED and ticket created successfully.");
+        } catch (UnsupportedOperationException e) {
+            System.err.println(e.getMessage());
+        }
 
         // Loading JSON lines from the file
         BusTicketService busTicketService = context.getBean(BusTicketService.class);
