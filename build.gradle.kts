@@ -1,5 +1,7 @@
 plugins {
-    id("java")
+    java
+    id("org.springframework.boot") version "3.1.4"
+    id("io.spring.dependency-management") version "1.1.3"
 }
 
 group = "org.example"
@@ -19,6 +21,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter")
 }
 
 tasks.test {

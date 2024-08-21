@@ -1,16 +1,5 @@
 package myApp.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
-import static myApp.service.Constants.FILE_PATH;
-
 public class BusTicket {
 
     private String ticketClass;
@@ -43,33 +32,6 @@ public class BusTicket {
     public int getPrice() {return price;}
 
     public void setPrice(int price) {this.price = price;}
-
-    public static List<BusTicket> getTicketsFromFile() {
-        List<String> fileLines;
-        List<BusTicket> ticketsList = new ArrayList<>();
-
-        try {
-            fileLines = Files.readAllLines(Paths.get(FILE_PATH));
-
-            for (String line : fileLines) {
-                try {
-                    BusTicket busTicket = new ObjectMapper().readValue(line, BusTicket.class);
-                    ticketsList.add(busTicket);
-                } catch (JsonProcessingException e) {
-                    System.err.println("Error processing JSON: " + e.getMessage());
-                    return null;
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
-            return null;
-        } catch (Exception e) {
-            System.err.println("Unexpected error reading file: " + e.getMessage());
-            return null;
-        }
-
-        return ticketsList;
-    }
 
     @Override
     public String toString() {
