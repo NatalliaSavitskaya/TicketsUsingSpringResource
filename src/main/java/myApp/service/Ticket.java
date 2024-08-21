@@ -1,16 +1,16 @@
 package myApp.service;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Tickets")
+@Table(name = "tickets")
 public class Ticket {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
-    @Column(name = "user_id", insertable = false, updatable = false)
+    @Column(name = "user_id")
     private int userId;
 
     @Column(name = "creation_date")
@@ -20,10 +20,17 @@ public class Ticket {
     private String ticketType;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
-    public Ticket() {}
+    public Ticket() {   }
+
+    public Ticket(int id, int userId, LocalDateTime creationDate, String ticketType) {
+        this.id = id;
+        this.userId = userId;
+        this.creationDate = creationDate;
+        this.ticketType = ticketType;
+    }
 
     // Getters and Setters
     public int getId() {return id;}
@@ -45,4 +52,10 @@ public class Ticket {
     public User getUser() {return user;}
 
     public void setUser(User user) {this.user = user;}
+
+    @Override
+    public String toString() {
+        return "Ticket ID = " + id + ", user_id = " + userId + ", creationDate = "
+                + creationDate + ", ticketType = " + ticketType;
+    }
 }

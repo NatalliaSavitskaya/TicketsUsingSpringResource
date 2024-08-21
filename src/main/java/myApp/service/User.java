@@ -1,26 +1,38 @@
 package myApp.service;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
-
-    @Column(name = "creation_date")
-    private LocalDateTime creationDate;
 
     @Column(name = "name")
     private String name;
 
+    @Column(name = "creation_date")
+    private LocalDateTime creationDate;
+
+    @Column(name = "status")
+    private String status;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Ticket> tickets;
 
-    public User() {}
+    public User() {
+        this.id = id + 1;
+    }
+
+    public User(int id, String name, LocalDateTime creationDate, String status) {
+        this.id = id;
+        this.name = name;
+        this.creationDate = creationDate;
+        this.status = status;
+    }
 
     // Getters and Setters
     public int getId() {return id;}
@@ -35,7 +47,16 @@ public class User {
 
     public void setName(String name) {this.name = name;}
 
+    public String getStatus() {return status;}
+
+    public void setStatus(String status) {this.status = status;}
+
     public List<Ticket> getTickets() {return tickets;}
 
     public void setTickets(List<Ticket> tickets) {this.tickets = tickets;}
+
+    @Override
+    public String toString() {
+        return "User ID = " + id + ", name = " + name + ", creationDate = " + creationDate + ", status = " + status;
+    }
 }
