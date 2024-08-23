@@ -6,17 +6,17 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public class TicketDAO {
+public class OrderDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Transactional
-    public void saveTicket(Ticket ticket) {
-        if (entityManager.contains(ticket)) {
-            entityManager.persist(ticket);
+    public void saveOrder(Order order) {
+        if (entityManager.contains(order)) {
+            entityManager.persist(order);
         } else {
-            entityManager.merge(ticket);
+            entityManager.merge(order);
         }
     }
 }

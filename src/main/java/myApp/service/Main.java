@@ -12,22 +12,22 @@ public class Main {
     public static void main(String[] args) {
         ApplicationContext  context = SpringApplication.run(Main.class, args);
 
-        UserService userService = context.getBean(UserService.class);
-        TicketService ticketService = context.getBean(TicketService.class);
+        ClientService clientService = context.getBean(ClientService.class);
+        OrderService orderService = context.getBean(OrderService.class);
 
         try {
             // Example saving User and Ticket to database
-            User user = new User(1, "New User", LocalDateTime.now(), "PENDING");
-            userService.saveUser(user);
-            System.out.println("User saved successfully: " + user);
-            Ticket ticket = new Ticket(1, 1, LocalDateTime.now(), "DAY");
-            ticketService.saveTicket(ticket);
-            System.out.println("Ticket saved successfully: " + ticket);
+            Client client = new Client(1, "New User", LocalDateTime.now(), "PENDING");
+            clientService.saveClient(client);
+            System.out.println("Client saved successfully: " + client);
+            Order order = new Order(1, 1, LocalDateTime.now(), 155.65);
+            orderService.saveOrder(order);
+            System.out.println("Order saved successfully: " + order);
 
             // Example updating status of User and creating his/her Ticket
-            userService.saveUser(new User(2, "Second User", LocalDateTime.now(), "PENDING"));
-            userService.updateUserStatusAndCreateTicket(2, "ACTIVATED", "DAY");
-            System.out.println("User status updated to ACTIVATED and ticket created successfully.");
+            clientService.saveClient(new Client(2, "Second User", LocalDateTime.now(), "PENDING"));
+            clientService.updateClientStatusAndCreateOrder(2, "ACTIVATED", 200.65);
+            System.out.println("Client status updated to ACTIVATED and order is created successfully.");
         } catch (UnsupportedOperationException e) {
             System.err.println(e.getMessage());
         }

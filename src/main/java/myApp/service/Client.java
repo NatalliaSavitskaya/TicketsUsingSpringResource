@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "clients")
+public class Client {
     @Id
     @Column(name = "id")
     private int id;
@@ -20,14 +20,14 @@ public class User {
     @Column(name = "status")
     private String status;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Ticket> tickets;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Order> orders;
 
-    public User() {
+    public Client() {
         this.id = id + 1;
     }
 
-    public User(int id, String name, LocalDateTime creationDate, String status) {
+    public Client(int id, String name, LocalDateTime creationDate, String status) {
         this.id = id;
         this.name = name;
         this.creationDate = creationDate;
@@ -51,12 +51,12 @@ public class User {
 
     public void setStatus(String status) {this.status = status;}
 
-    public List<Ticket> getTickets() {return tickets;}
+    public List<Order> getOrders() {return orders;}
 
-    public void setTickets(List<Ticket> tickets) {this.tickets = tickets;}
+    public void setOrders(List<Order> orders) {this.orders = orders;}
 
     @Override
     public String toString() {
-        return "User ID = " + id + ", name = " + name + ", creationDate = " + creationDate + ", status = " + status;
+        return "Client ID = " + id + ", name = " + name + ", creationDate = " + creationDate + ", status = " + status;
     }
 }
