@@ -23,9 +23,7 @@ public class Client {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders;
 
-    public Client() {
-        this.id = id + 1;
-    }
+    public Client() {    }
 
     public Client(int id, String name, LocalDateTime creationDate, String status) {
         this.id = id;

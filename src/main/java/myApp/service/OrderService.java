@@ -14,4 +14,8 @@ public class OrderService {
     public void saveOrder(Order order) {
         orderDAO.saveOrder(order);
     }
+
+    public Order getOrder(int orderId) {
+        return orderDAO.getOrder(orderId);
+    }
 }

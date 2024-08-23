@@ -8,7 +8,8 @@ public class ClientService {
 
     private final ClientDAO clientDAO;
 
-    @Value("${feature.updateClientAndCreateOrder:true}")
+    @Value("${feature.updateClientAndCreateOrder:true}")  // the value should be changed to "false"
+    // if editing the status of client is forbidden
     private boolean updateClientAndCreateOrderEnabled;
 
     public ClientService(ClientDAO clientDAO) {
@@ -19,10 +20,14 @@ public class ClientService {
         clientDAO.saveClient(client);
     }
 
-    public void updateClientStatusAndCreateOrder(int userId, String newStatus, double sum) {
+    public Client getClient(int clientId) {
+        return clientDAO.getClient(clientId);
+    }
+
+    public void updateClientStatusAndCreateOrder(int clientId, String newStatus, int orderID, double sum) {
         if (!updateClientAndCreateOrderEnabled) {
             throw new UnsupportedOperationException("Updating client status and creating a order is disabled.");
         }
-        clientDAO.updateClientStatusAndCreateOrder(userId, newStatus, sum);
+        clientDAO.updateClientStatusAndCreateOrder(clientId, newStatus, orderID, sum);
     }
 }
