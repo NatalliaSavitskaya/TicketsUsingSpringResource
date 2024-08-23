@@ -1,56 +1,48 @@
 package myApp.service;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.ResultSet;
-import org.springframework.jdbc.core.RowMapper;
 import java.time.LocalDateTime;
-
-import java.sql.SQLException;
-
-import static myApp.service.SqlQueries.*;
 
 @Repository
 public class ClientDAO {
-    private final JdbcTemplate jdbcTemplate;
 
-    public ClientDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Transactional
     public void saveClient(Client client) {
-        jdbcTemplate.update(SAVE_CLIENT, client.getId(), client.getName(), client.getCreationDate(), client.getStatus());
+        if (entityManager.contains(client)) {
+            entityManager.persist(client);
+        } else {
+            entityManager.merge(client);
+        }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Client getClient(int id) {
-        return jdbcTemplate.queryForObject(GET_CLIENT_BY_ID, new UserRowMapper(), id);
+        return entityManager.find(Client.class, id);
     }
 
     @Transactional
     public void updateClientStatusAndCreateOrder(int clientId, String newStatus, int orderId, double sum) {
-        Client client = getClient(clientId);
+        Client client = entityManager.find(Client.class, clientId);
         if (client != null) {
-            jdbcTemplate.update(UPDATE_CLIENT_STATUS, newStatus, clientId);
-            Order order = new Order(orderId, clientId, LocalDateTime.now(), sum);
-            jdbcTemplate.update(SAVE_ORDER, order.getId(), order.getClientId(), order.getCreationDate(), order.getSum());
+            client.setStatus(newStatus);
+            entityManager.merge(client);
+            Order order = new Order();
+            order.setId(orderId);
+            order.setClient(client);
+            order.setClientId(clientId);
+            order.setCreationDate(LocalDateTime.now());
+            order.setSum(sum);
+            entityManager.persist(order);
         } else {
             throw new IllegalArgumentException("Client not found with ID: " + clientId);
         }
     }
 
-    private static class UserRowMapper implements RowMapper<Client> {
-        @Override
-        public Client mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Client client = new Client();
-            client.setId(rs.getInt("id"));
-            client.setName(rs.getString("name"));
-            client.setCreationDate(rs.getTimestamp("creation_date").toLocalDateTime());
-            client.setStatus(rs.getString("status"));
-            return client;
-        }
-    }
 }

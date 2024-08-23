@@ -8,7 +8,7 @@ public class ClientService {
 
     private final ClientDAO clientDAO;
 
-    @Value("${feature.updateClientAndCreateOrder:true}")  // the value should be changed to "false"
+    @Value("${feature.updateClientAndCreateOrder:true}") // the value should be changed to "false"
     // if editing the status of client is forbidden
     private boolean updateClientAndCreateOrderEnabled;
 
