@@ -1,5 +1,6 @@
 package myApp.service;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -21,6 +22,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "client_id", insertable = false, updatable = false)
+    @JsonBackReference
     private Client client;
 
     public Order() {   }

@@ -11,7 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
         ApplicationContext  context = SpringApplication.run(Main.class, args);
-
+/*
         // Testing conditional bean execution
         try {
             SomeService someService = context.getBean(SomeService.class);
@@ -23,7 +23,7 @@ public class Main {
         ClientService clientService = context.getBean(ClientService.class);
         OrderService orderService = context.getBean(OrderService.class);
         try {
-            /*
+
             // Example saving Client and Order to the database
             clientService.saveClient(new Client(1, "Mark Antony", LocalDateTime.now(), "PENDING"));
             Client firstClient = clientService.getClient(1);
@@ -42,11 +42,11 @@ public class Main {
             Order createdOrder = orderService.getOrder(2);
             System.out.println("Client status updated to ACTIVATED: " + clientService.getClient(2) +
                         " and order is created successfully: " + createdOrder);
-*/
+
             // Using queries from OrderRepository
             int clientId = 1;
-            Order secondOrder = new Order(3, clientId, LocalDateTime.now(), 100.21);
-            orderService.saveOrder(secondOrder);
+          //  Order secondOrder = new Order(3, clientId, LocalDateTime.now(), 100.21);
+         //   orderService.saveOrder(secondOrder);
             List<Order> orders = orderService.getOrdersByClientId(clientId);
 
             System.out.println("Orders for client ID " + clientId + ":");
@@ -57,7 +57,7 @@ public class Main {
         } catch (UnsupportedOperationException e) {
                 System.err.println(e.getMessage());
             }
-/*
+
         // Loading JSON lines from the file
         BusTicketService busTicketService = context.getBean(BusTicketService.class);
 
