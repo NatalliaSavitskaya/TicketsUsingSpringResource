@@ -11,7 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
         ApplicationContext  context = SpringApplication.run(Main.class, args);
-/*
+
         // Testing conditional bean execution
         try {
             SomeService someService = context.getBean(SomeService.class);
@@ -45,8 +45,8 @@ public class Main {
 
             // Using queries from OrderRepository
             int clientId = 1;
-          //  Order secondOrder = new Order(3, clientId, LocalDateTime.now(), 100.21);
-         //   orderService.saveOrder(secondOrder);
+            Order secondOrder = new Order(3, clientId, LocalDateTime.now(), 100.21);
+            orderService.saveOrder(secondOrder);
             List<Order> orders = orderService.getOrdersByClientId(clientId);
 
             System.out.println("Orders for client ID " + clientId + ":");
@@ -69,7 +69,5 @@ public class Main {
             }
         } else
             System.out.println("There are no tickets in the file.");
-
- */
     }
 }

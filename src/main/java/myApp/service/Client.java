@@ -25,9 +25,7 @@ public class Client {
     @JsonManagedReference
     private List<Order> orders;
 
-    public Client() {
-        this.id = id + 1;
-    }
+    public Client() {    }
 
     public Client(int id, String name, LocalDateTime creationDate, String status) {
         this.id = id;
