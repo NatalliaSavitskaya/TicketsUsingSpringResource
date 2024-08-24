@@ -12,6 +12,15 @@ public class Main {
     public static void main(String[] args) {
         ApplicationContext  context = SpringApplication.run(Main.class, args);
 
+        // Testing conditional bean execution
+        try {
+            SomeService someService = context.getBean(SomeService.class);
+            someService.execute();
+        } catch (Exception e) {
+            System.out.println("ThisIsFirstConditionalBean is not available in the application context.");
+        }
+
+        /*
         ClientService clientService = context.getBean(ClientService.class);
         OrderService orderService = context.getBean(OrderService.class);
         try {
@@ -48,5 +57,7 @@ public class Main {
             }
         } else
             System.out.println("There are no tickets in the file.");
+
+         */
     }
 }
