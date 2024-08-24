@@ -20,17 +20,17 @@ public class Main {
             System.out.println("ThisIsFirstConditionalBean is not available in the application context.");
         }
 
-        /*
         ClientService clientService = context.getBean(ClientService.class);
         OrderService orderService = context.getBean(OrderService.class);
         try {
+            /*
             // Example saving Client and Order to the database
             clientService.saveClient(new Client(1, "Mark Antony", LocalDateTime.now(), "PENDING"));
             Client firstClient = clientService.getClient(1);
             System.out.println("Client saved successfully: " + firstClient);
 
-            Order order = new Order(1, 1, LocalDateTime.now(), 155.65);
-            orderService.saveOrder(order);
+            Order firstOrder = new Order(1, 1, LocalDateTime.now(), 155.65);
+            orderService.saveOrder(firstOrder);
             Order savedOrder = orderService.getOrder(1);
             System.out.println("Order saved successfully: " + savedOrder);
 
@@ -42,10 +42,22 @@ public class Main {
             Order createdOrder = orderService.getOrder(2);
             System.out.println("Client status updated to ACTIVATED: " + clientService.getClient(2) +
                         " and order is created successfully: " + createdOrder);
-            } catch (UnsupportedOperationException e) {
-                System.err.println(e.getMessage());
+*/
+            // Using queries from OrderRepository
+            int clientId = 1;
+            Order secondOrder = new Order(3, clientId, LocalDateTime.now(), 100.21);
+            orderService.saveOrder(secondOrder);
+            List<Order> orders = orderService.getOrdersByClientId(clientId);
+
+            System.out.println("Orders for client ID " + clientId + ":");
+            for (Order order : orders) {
+                System.out.println(order);
             }
 
+        } catch (UnsupportedOperationException e) {
+                System.err.println(e.getMessage());
+            }
+/*
         // Loading JSON lines from the file
         BusTicketService busTicketService = context.getBean(BusTicketService.class);
 
@@ -58,6 +70,6 @@ public class Main {
         } else
             System.out.println("There are no tickets in the file.");
 
-         */
+ */
     }
 }

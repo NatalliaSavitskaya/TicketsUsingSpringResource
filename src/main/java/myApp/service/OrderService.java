@@ -1,21 +1,26 @@
 package myApp.service;
 
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class OrderService {
 
-    private final OrderDAO orderDAO;
+    private final OrderRepository orderRepository;
 
-    public OrderService(OrderDAO orderDAO) {
-        this.orderDAO = orderDAO;
+    public OrderService(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
     }
 
     public void saveOrder(Order order) {
-        orderDAO.saveOrder(order);
+        orderRepository.save(order);
     }
 
     public Order getOrder(int orderId) {
-        return orderDAO.getOrder(orderId);
+        return orderRepository.findById(orderId).orElse(null);
+    }
+
+    public List<Order> getOrdersByClientId(int clientId) {
+        return orderRepository.findByClientId(clientId);
     }
 }
