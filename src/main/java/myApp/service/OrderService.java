@@ -1,5 +1,7 @@
 package myApp.service;
 
+import myApp.entity.Order;
+import myApp.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

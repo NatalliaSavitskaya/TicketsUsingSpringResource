@@ -1,5 +1,6 @@
-package myApp.service;
+package myApp.repository;
 
+import myApp.entity.Order;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;

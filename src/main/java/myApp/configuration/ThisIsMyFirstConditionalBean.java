@@ -1,4 +1,4 @@
-package myApp.service;
+package myApp.configuration;
 
 public class ThisIsMyFirstConditionalBean {
     public ThisIsMyFirstConditionalBean() {

@@ -1,5 +1,7 @@
-package myApp.service;
+package myApp.controller;
 
+import myApp.entity.Order;
+import myApp.repository.OrderRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

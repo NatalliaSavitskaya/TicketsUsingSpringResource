@@ -1,7 +1,9 @@
-package myApp.service;
+package myApp.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import myApp.entity.Client;
+
 import java.time.LocalDateTime;
 
 @Entity

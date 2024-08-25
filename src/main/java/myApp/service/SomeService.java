@@ -1,19 +1,20 @@
-package myApp.service;
+    package myApp.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+    import myApp.configuration.ThisIsMyFirstConditionalBean;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.stereotype.Service;
 
-@Service
-public class SomeService {
+    @Service
+    public class SomeService {
 
-    private final ThisIsMyFirstConditionalBean firstConditionalBean;
+        private final ThisIsMyFirstConditionalBean firstConditionalBean;
 
-    @Autowired
-    public SomeService(ThisIsMyFirstConditionalBean firstConditionalBean) {
-        this.firstConditionalBean = firstConditionalBean;
+        @Autowired
+        public SomeService(ThisIsMyFirstConditionalBean firstConditionalBean) {
+            this.firstConditionalBean = firstConditionalBean;
+        }
+
+        public void execute() {
+            firstConditionalBean.performAction();
+        }
     }
-
-    public void execute() {
-        firstConditionalBean.performAction();
-    }
-}
