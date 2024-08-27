@@ -1,4 +1,4 @@
-package myApp.service;
+package myApp.entity;
 
 public class BusTicket {
 

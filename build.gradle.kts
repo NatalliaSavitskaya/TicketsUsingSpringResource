@@ -15,6 +15,8 @@ dependencies {
     implementation("org.hibernate.orm:hibernate-core:6.5.2.Final")
     implementation("org.hibernate.orm:hibernate-hikaricp:6.5.2.Final")
 
+    implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
+
     implementation("org.postgresql:postgresql:42.7.2")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
@@ -23,6 +25,8 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
 }
 
 tasks.test {
