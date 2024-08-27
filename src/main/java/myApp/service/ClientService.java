@@ -23,6 +23,9 @@ public class ClientService {
     }
 
     public void saveClient(Client client) {
+        if (client == null) {
+            throw new IllegalArgumentException("Client cannot be null");
+        }
         clientRepository.save(client);
     }
 
@@ -50,5 +53,9 @@ public class ClientService {
         order.setSum(sum);
 
         orderRepository.save(order);
+    }
+
+    public void setUpdateClientAndCreateOrderEnabled(boolean enabled) {
+        this.updateClientAndCreateOrderEnabled = enabled;
     }
 }
