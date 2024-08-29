@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ClientService {
@@ -31,6 +32,17 @@ public class ClientService {
 
     public Client getClient(int clientId) {
         return clientRepository.findById(clientId).orElse(null);
+    }
+
+    public void deleteClientById(int clientId) {
+        Client client = clientRepository.findById(clientId).orElseThrow(() ->
+                new IllegalArgumentException("Client not found with ID: " + clientId)
+        );
+        List<Order> orders = orderRepository.findByClientId(clientId);
+        if (!orders.isEmpty()) {
+            throw new UnsupportedOperationException("Client with ID " + clientId + " cannot be deleted because they have associated orders.");
+        }
+        clientRepository.deleteById(clientId);
     }
 
     public void updateClientStatusAndCreateOrder(int clientId, String newStatus, int orderID, double sum) {

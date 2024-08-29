@@ -6,12 +6,13 @@ import myApp.repository.ClientRepository;
 import myApp.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,25 +29,31 @@ class ClientServiceTest {
     @InjectMocks
     private ClientService clientService;
 
+    @Captor
+    private ArgumentCaptor<Client> clientCaptor;
+
+    @Captor
+    private ArgumentCaptor<Order> orderCaptor;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
-    // Positive Test: Saving a client successfully
-    @Test
-    void testSaveClient_Positive() {
-        Client client = new Client(1, "John Doe", LocalDateTime.now(), "PENDING");
+    @ParameterizedTest
+    @ValueSource(strings = {"John Doe", ""})
+    void testSaveClient(String name) {
+        Client client = new Client(1, name, LocalDateTime.now(), "PENDING");
         when(clientRepository.save(any(Client.class))).thenReturn(client);
 
         clientService.saveClient(client);
 
-        verify(clientRepository, times(1)).save(client);
+        verify(clientRepository, times(1)).save(clientCaptor.capture());
+        assertEquals(client, clientCaptor.getValue());
     }
 
-    // Negative Test: Saving a null client (should not save)
     @Test
-    void testSaveClient_Negative() {
+    void testSaveClient_NullClient() {
         assertThrows(IllegalArgumentException.class, () -> {
             clientService.saveClient(null);
         });
@@ -54,33 +61,37 @@ class ClientServiceTest {
         verify(clientRepository, times(0)).save(any(Client.class));
     }
 
-    // Corner Case: Saving a client with minimal details (empty name)
     @Test
-    void testSaveClient_CornerCase() {
+    void testSaveClient_ClientNameIsEmpty() {
         Client client = new Client(1, "", LocalDateTime.now(), "PENDING");
         when(clientRepository.save(any(Client.class))).thenReturn(client);
 
         clientService.saveClient(client);
 
-        verify(clientRepository, times(1)).save(client);
+        verify(clientRepository, times(1)).save(clientCaptor.capture());
+        assertEquals(client, clientCaptor.getValue());
     }
 
-    // Positive Test: Updating client status and creating an order successfully
-    @Test
-    void testUpdateClientStatusAndCreateOrder_Positive() {
+    @ParameterizedTest
+    @ValueSource(strings = {"PENDING", "ACTIVE"})
+    void testUpdateClientStatusAndCreateOrder_Positive(String newStatus) {
         clientService.setUpdateClientAndCreateOrderEnabled(true);
         Client client = new Client(2, "Jane Doe", LocalDateTime.now(), "PENDING");
         when(clientRepository.findById(2)).thenReturn(Optional.of(client));
 
-        clientService.updateClientStatusAndCreateOrder(2, "ACTIVATED", 2, 200.65);
+        clientService.updateClientStatusAndCreateOrder(2, newStatus, 2, 200.65);
 
-        verify(clientRepository, times(1)).save(client);
-        verify(orderRepository, times(1)).save(any(Order.class));
+        verify(clientRepository, times(1)).save(clientCaptor.capture());
+        verify(orderRepository, times(1)).save(orderCaptor.capture());
+
+        assertEquals(newStatus, clientCaptor.getValue().getStatus());
+        assertEquals(2, orderCaptor.getValue().getId());
+        assertEquals(2, orderCaptor.getValue().getClient().getId());
+        assertEquals(200.65, orderCaptor.getValue().getSum());
     }
 
-    // Negative Test: Client not found for updating status
     @Test
-    void testUpdateClientStatusAndCreateOrder_Negative() {
+    void testUpdateClientStatusAndCreateOrder_ClientNotFound() {
         clientService.setUpdateClientAndCreateOrderEnabled(true);
         when(clientRepository.findById(3)).thenReturn(Optional.empty());
 
@@ -92,16 +103,89 @@ class ClientServiceTest {
         verify(orderRepository, times(0)).save(any(Order.class));
     }
 
-    // Corner Case: Update status to a client with an empty status and create order
     @Test
-    void testUpdateClientStatusAndCreateOrder_CornerCase() {
+    void testUpdateClientStatusAndCreateOrder_ClientStatusIsEmpty() {
         clientService.setUpdateClientAndCreateOrderEnabled(true);
         Client client = new Client(4, "Empty Status Client", LocalDateTime.now(), "");
         when(clientRepository.findById(4)).thenReturn(Optional.of(client));
 
         clientService.updateClientStatusAndCreateOrder(4, "ACTIVATED", 4, 100.00);
 
-        verify(clientRepository, times(1)).save(client);
-        verify(orderRepository, times(1)).save(any(Order.class));
+        verify(clientRepository, times(1)).save(clientCaptor.capture());
+        verify(orderRepository, times(1)).save(orderCaptor.capture());
+
+        assertEquals("ACTIVATED", clientCaptor.getValue().getStatus());
+        assertEquals(4, orderCaptor.getValue().getId());
+        assertEquals(4, orderCaptor.getValue().getClient().getId());
+        assertEquals(100.00, orderCaptor.getValue().getSum());
+    }
+
+    @Test
+    void testGetClient_Positive() {
+        Client expectedClient = new Client(1, "John Doe", LocalDateTime.now(), "ACTIVE");
+        when(clientRepository.findById(1)).thenReturn(Optional.of(expectedClient));
+
+        Client actualClient = clientService.getClient(1);
+
+        assertNotNull(actualClient);
+        assertEquals(expectedClient, actualClient);
+        verify(clientRepository, times(1)).findById(1);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {999, 0})
+    void testGetClient_ClientNotFound(int clientId) {
+        when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
+
+        Client actualClient = clientService.getClient(clientId);
+
+        assertNull(actualClient);
+        verify(clientRepository, times(1)).findById(clientId);
+    }
+
+    @Test
+    void testGetClient_ClientIdIs0() {
+        when(clientRepository.findById(0)).thenReturn(Optional.empty());
+
+        Client actualClient = clientService.getClient(0);
+
+        assertNull(actualClient);
+        verify(clientRepository, times(1)).findById(0);
+    }
+
+    @Test
+    void testDeleteClientById_Positive() {
+        Client client = new Client(1, "John Doe", LocalDateTime.now(), "ACTIVE");
+        when(clientRepository.findById(1)).thenReturn(Optional.of(client));
+        when(orderRepository.findByClientId(1)).thenReturn(Collections.emptyList());
+
+        clientService.deleteClientById(1);
+
+        verify(clientRepository, times(1)).deleteById(1);
+    }
+
+    @Test
+    void testDeleteClientById_ClientNotFound() {
+        when(clientRepository.findById(999)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            clientService.deleteClientById(999);
+        });
+
+        verify(clientRepository, times(0)).deleteById(anyInt());
+    }
+
+    @Test
+    void testDeleteClientById_ClientHasOrders() {
+        Client client = new Client(2, "Jane Doe", LocalDateTime.now(), "ACTIVE");
+        Order order = new Order(1, 2, LocalDateTime.now(), 100.0);
+        when(clientRepository.findById(2)).thenReturn(Optional.of(client));
+        when(orderRepository.findByClientId(2)).thenReturn(Collections.singletonList(order));
+
+        assertThrows(UnsupportedOperationException.class, () -> {
+            clientService.deleteClientById(2);
+        });
+
+        verify(clientRepository, times(0)).deleteById(2);
     }
 }
