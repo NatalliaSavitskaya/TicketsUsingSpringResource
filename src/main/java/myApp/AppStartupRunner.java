@@ -34,14 +34,12 @@ public class AppStartupRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        // Testing conditional bean execution
         try {
             someService.execute();
         } catch (Exception e) {
             System.out.println("ThisIsFirstConditionalBean is not available in the application context.");
         }
 
-        // Example saving Client and Order to the database
         clientService.saveClient(new Client(1, "Mark Antony", LocalDateTime.now(), "PENDING"));
         Client firstClient = clientService.getClient(1);
         System.out.println("Client saved successfully: " + firstClient);
@@ -51,7 +49,8 @@ public class AppStartupRunner implements CommandLineRunner {
         Order savedOrder = orderService.getOrder(1);
         System.out.println("Order saved successfully: " + savedOrder);
 
-        // Example updating status of Client and creating his/her Order
+        clientService.deleteClientById(1);
+
         clientService.saveClient(new Client(2, "Prince BlueRay", LocalDateTime.now(), "PENDING"));
         Client secondClient = clientService.getClient(2);
         System.out.println("Client saved successfully: " + secondClient);
@@ -60,7 +59,6 @@ public class AppStartupRunner implements CommandLineRunner {
         System.out.println("Client status updated to ACTIVATED: " + clientService.getClient(2) +
                 " and order is created successfully: " + createdOrder);
 
-        // Using queries from OrderRepository
         int clientId = 1;
         Order secondOrder = new Order(3, clientId, LocalDateTime.now(), 100.21);
         orderService.saveOrder(secondOrder);
@@ -71,7 +69,6 @@ public class AppStartupRunner implements CommandLineRunner {
             System.out.println(order);
         }
 
-        // Loading JSON lines from the file
         List<BusTicket> loadedTickets = busTicketService.loadBusTickets();
         if (loadedTickets != null && !loadedTickets.isEmpty()) {
             System.out.println(loadedTickets.size() + " lines from the JSON file were loaded to the arraylist of bus tickets.");

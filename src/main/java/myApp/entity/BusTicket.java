@@ -16,7 +16,6 @@ public class BusTicket {
         this.price = price;
     }
 
-    // Getters and Setters
     public String getTicketClass() {return ticketClass;}
 
     public void setTicketClass(String ticketClass) {this.ticketClass = ticketClass;}
